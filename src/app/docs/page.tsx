@@ -136,7 +136,7 @@ function CodeTabs() {
 
 export default function DocsPage() {
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex w-full flex-col gap-8 overflow-x-hidden">
       <section className="space-y-4">
         <h1 className="text-4xl font-bold tracking-tighter">Documentation</h1>
         <p className="text-xl text-gray-500 dark:text-gray-400">

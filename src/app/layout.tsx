@@ -5,6 +5,7 @@ import Head from 'next/head';
 import QueryProvider from '@/providers/queryProvider';
 import BaseLayout from '@/components/layout/baseLayout';
 import { ThemeProvider } from 'next-themes';
+import { Toaster } from '@/components/ui/sonner';
 
 const montserratFont = Montserrat({
   variable: '--font-montserrat-sans',
@@ -33,10 +34,11 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
 
-      <body className={`${montserratFont.variable} ${firaMono.variable}`}>
+      <body className={`${montserratFont.variable} ${firaMono.variable} overflow-x-hidden`}>
         <QueryProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <BaseLayout>{children}</BaseLayout>
+            <Toaster />
           </ThemeProvider>
         </QueryProvider>
       </body>

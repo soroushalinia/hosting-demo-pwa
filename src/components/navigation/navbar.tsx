@@ -37,9 +37,8 @@ export default function Navbar() {
   };
 
   const user = session?.user;
-  const displayName = user?.user_metadata?.displayName || user?.email;
-  const credit = user?.user_metadata?.credit;
-
+  const displayName = user?.user_metadata?.display_name || user?.email;
+  const credits = user?.user_metadata?.credit || 0;
   return (
     <div className="sticky top-0 z-50 flex h-[60px] w-screen items-center justify-center border-b bg-transparent backdrop-blur">
       <div className="flex h-[60px] w-full max-w-7xl flex-row items-center justify-between px-4">
@@ -75,9 +74,7 @@ export default function Navbar() {
                   <User2Icon className="text-primary" size={32} />
                   <div className="flex flex-col items-start text-left leading-tight select-none">
                     <span className="text-primary text-xs font-medium">{displayName}</span>
-                    {credit !== undefined && (
-                      <span className="text-muted-foreground text-xs">Credit: ${credit}</span>
-                    )}
+                    <span className="text-muted-foreground text-xs">Credits: ${credits}</span>
                   </div>
                 </Button>
               </Link>
@@ -138,9 +135,7 @@ export default function Navbar() {
                   <User2Icon className="text-primary" size={24} />
                   <div className="flex flex-col text-sm">
                     <span className="text-primary font-medium">{displayName}</span>
-                    {credit !== undefined && (
-                      <span className="text-muted-foreground text-xs">Credit: ${credit}</span>
-                    )}
+                    <span className="text-muted-foreground text-xs">Credits: ${credits}</span>
                   </div>
                 </Link>
               )}
