@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import { Montserrat, Fira_Mono } from 'next/font/google';
 import './globals.css';
 import Head from 'next/head';
-import QueryProvider from '@/providers/query-provider';
+import QueryProvider from '@/providers/queryProvider';
+import BaseLayout from '@/components/layout/baseLayout';
+import { ThemeProvider } from 'next-themes';
 
 const montserratFont = Montserrat({
   variable: '--font-montserrat-sans',
@@ -30,8 +32,13 @@ export default function RootLayout({
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
+
       <body className={`${montserratFont.variable} ${firaMono.variable}`}>
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <BaseLayout>{children}</BaseLayout>
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );
