@@ -3,10 +3,9 @@ import { Card } from '@/components/ui/card';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function Home() {
+export default function Landing() {
   return (
     <div className="flex flex-col gap-16 py-8">
-      {/* Hero Section */}
       <section className="flex flex-col items-center gap-6 text-center">
         <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
           Cloud Infrastructure Made Simple
@@ -25,7 +24,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <Card className="space-y-4 p-6">
           <div className="flex items-center gap-4">
@@ -62,14 +60,13 @@ export default function Home() {
         </Card>
       </section>
 
-      {/* Pricing Section */}
       <section className="space-y-8">
         <div className="space-y-4 text-center">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
             Simple, Transparent Pricing
           </h2>
           <p className="text-gray-500 md:text-xl dark:text-gray-400">
-            Choose the plan that's right for you
+            Choose the plan that&apos;s right for you
           </p>
         </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -130,7 +127,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="space-y-6 py-8 text-center">
         <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Ready to Get Started?</h2>
         <p className="mx-auto max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">

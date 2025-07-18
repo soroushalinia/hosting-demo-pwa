@@ -28,7 +28,7 @@ export default function SupportPage() {
             <div className="space-y-2">
               <h3 className="font-medium">Server Performance</h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Tips for optimizing your server's performance and resolving slowdown issues.
+                Tips for optimizing your server&apos;s performance and resolving slowdown issues.
               </p>
               <span className="text-primary text-sm">View solutions →</span>
             </div>

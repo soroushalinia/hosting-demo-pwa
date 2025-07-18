@@ -115,7 +115,7 @@ function CodeTabs() {
         {Object.keys(snippets).map((key) => (
           <button
             key={key}
-            onClick={() => setLang(key as any)}
+            onClick={() => setLang(key as 'bash' | 'python' | 'go' | 'ts')}
             className={`rounded-md px-3 py-1 text-sm font-medium ${lang === key ? 'bg-white shadow dark:bg-gray-700' : 'hover:bg-gray-200 dark:hover:bg-gray-700'}`}
           >
             {key.toUpperCase()}
@@ -208,7 +208,7 @@ export default function DocsPage() {
       <section className="space-y-4 border-t pt-8">
         <h2 className="text-2xl font-semibold tracking-tight">Need Help?</h2>
         <p className="text-gray-500 dark:text-gray-400">
-          Can't find what you're looking for? Our support team is here to help.
+          Can&apos;t find what you&apos;re looking for? Our support team is here to help.
         </p>
         <Button asChild>
           <Link href="/support">Contact Support</Link>
