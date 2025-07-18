@@ -1,5 +1,5 @@
 'use client';
-import { useSession } from '@/app/hooks/useSession';
+import { useSession } from '@/hooks/useSession';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';

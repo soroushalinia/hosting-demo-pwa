@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/lib/supabaseClient';
-import { useSession } from '@/app/hooks/useSession';
+import { useSession } from '@/hooks/useSession';
 
 type AuthView = 'login' | 'register' | 'register-confirm';
 
