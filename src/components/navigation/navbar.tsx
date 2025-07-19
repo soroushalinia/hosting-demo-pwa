@@ -25,7 +25,7 @@ const ThemeToggle: React.FC = () => {
 };
 
 export default function Navbar() {
-  const { data: session } = useSession();
+  const { data: session, isLoading } = useSession();
   const router = useRouter();
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -63,7 +63,12 @@ export default function Navbar() {
             Support
           </Link>
           <ThemeToggle />
-          {user ? (
+          {isLoading ? (
+            <Button size="sm" variant="outline" className="h-10">
+              Loading...
+            </Button>
+          ) : null}
+          {user && (
             <div className="flex items-center gap-1.5">
               <Link href="/profile" passHref>
                 <Button
@@ -88,7 +93,8 @@ export default function Navbar() {
                 <LogOutIcon className="text-destructive" size={24} />
               </Button>
             </div>
-          ) : (
+          )}
+          {!isLoading && !user && (
             <Button
               size="sm"
               variant="outline"

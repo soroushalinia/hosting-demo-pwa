@@ -10,6 +10,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabaseClient';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const passwordSchema = z
   .object({
@@ -42,6 +43,7 @@ type DisplayNameForm = z.infer<typeof displayNameSchema>;
 
 export default function ProfilePage() {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const passwordForm = useForm<PasswordForm>({
     resolver: zodResolver(passwordSchema),
@@ -51,17 +53,27 @@ export default function ProfilePage() {
     resolver: zodResolver(displayNameSchema),
   });
 
-  const { data: userData, isLoading: userLoading } = useQuery({
+  const {
+    data: userData,
+    isLoading,
+    isFetched,
+  } = useQuery({
     queryKey: ['user-profile'],
     queryFn: async () => {
       const {
         data: { user },
         error,
       } = await supabase.auth.getUser();
-      if (error) throw error;
+      if (error || !user) return null;
       return user;
     },
   });
+
+  useEffect(() => {
+    if (isFetched && userData === null) {
+      router.replace('/auth');
+    }
+  }, [isFetched, userData, router]);
 
   const updateCredits = useMutation({
     mutationFn: async (amount: number) => {
@@ -131,7 +143,7 @@ export default function ProfilePage() {
     }
   }, [userData, displayNameForm]);
 
-  if (userLoading) {
+  if (isLoading || !isFetched || userData === null) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
