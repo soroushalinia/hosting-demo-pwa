@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { AlertCircle } from 'lucide-react';
+import Link from 'next/link';
 import { useEffect } from 'react';
 
 interface ErrorPageProps {
@@ -31,7 +32,7 @@ export default function ErrorPage({ error, reset }: Readonly<ErrorPageProps>) {
           Try Again
         </Button>
         <Button variant="outline" asChild>
-          <a href="/">Back to Home</a>
+          <Link href="/">Back to Home</Link>
         </Button>
       </div>
     </div>

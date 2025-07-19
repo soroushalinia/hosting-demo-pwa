@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { AlertTriangle } from 'lucide-react';
+import Link from 'next/link';
 
 export default function NotFoundPage() {
   return (
@@ -10,11 +11,12 @@ export default function NotFoundPage() {
       <div>
         <h2 className="text-2xl font-semibold">Page Not Found</h2>
         <p className="text-muted-foreground mt-2 max-w-md">
-          The page you're looking for doesn't exist. Double-check the URL or head back home.
+          The page you&apos;re looking for doesn&apos;t exist. Double-check the URL or head back
+          home.
         </p>
       </div>
       <Button asChild>
-        <a href="/">Back to Home</a>
+        <Link href="/">Back to Home</Link>
       </Button>
     </div>
   );
