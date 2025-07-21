@@ -1,7 +1,10 @@
-import { generateIPv4 } from '@/lib/ip';
+import { getUserFromHeader } from '@/lib/auth';
+import { AuthError } from '@/lib/error';
+import { generateIPv4, generateIPv6 } from '@/lib/ip';
 import { calculatePrice } from '@/lib/price';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
-import { createVpsSchema } from '@/schemas/vps';
+import { createVpsSchema, querySchema } from '@/schemas/vps';
+import { NextRequest } from 'next/server';
 import { ZodError } from 'zod';
 
 type VpsResponse = {
@@ -20,32 +23,107 @@ type VpsResponse = {
   power: 'off' | 'on' | 'starting';
 }[];
 
-class AuthError extends Error {
-  status: number;
-  constructor(status: number, message: string) {
-    super(message);
-    this.status = status;
-    this.name = 'AuthError';
+export async function GET(req: NextRequest) {
+  try {
+    const user = await getUserFromHeader(req);
+
+    const searchParams = req.nextUrl.searchParams;
+    const queryParams = Object.fromEntries(searchParams.entries());
+    const parsed = querySchema.safeParse(queryParams);
+
+    if (!parsed.success) {
+      return new Response(JSON.stringify({ error: parsed.error.issues }), {
+        headers: { 'Content-Type': 'application/json' },
+        status: 422,
+      });
+    }
+
+    const { page, pageSize, sortBy, sortOrder } = parsed.data;
+
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+
+    const {
+      data: server_list,
+      error,
+      count,
+    } = await supabaseAdmin
+      .from('vps_instances')
+      .select('*', { count: 'exact' })
+      .eq('user_id', user.id)
+      .order(sortBy, { ascending: sortOrder === 'asc' })
+      .range(from, to);
+
+    if (server_list && server_list.length > 0) {
+      const now = new Date();
+
+      const outdatedServers = server_list.filter((server) => {
+        const createdAt = new Date(server.created_at);
+        const diffInMinutes = (now.getTime() - createdAt.getTime()) / 1000 / 60;
+        return diffInMinutes > 3 && server.status === 'pending';
+      });
+
+      for (const server of outdatedServers) {
+        const { error: updateError } = await supabaseAdmin
+          .from('vps_instances')
+          .update({ status: 'on' })
+          .eq('id', server.id);
+
+        if (updateError) {
+          return new Response(
+            JSON.stringify({
+              error: 'Error getting servers. Please try again later or contact support.',
+            }),
+            {
+              status: 400,
+              headers: { 'Content-Type': 'application/json' },
+            },
+          );
+        }
+      }
+    }
+
+    if (error) {
+      return new Response(
+        JSON.stringify({
+          error: 'Error getting servers. Please try again later or contact support.',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+    }
+
+    return new Response(
+      JSON.stringify({
+        server_list,
+        pagination: {
+          page,
+          pageSize,
+          total: count,
+          totalPages: Math.ceil((count ?? 0) / pageSize),
+        },
+      }),
+      { headers: { 'Content-Type': 'application/json' } },
+    );
+  } catch (err: unknown) {
+    if (err instanceof AuthError) {
+      return new Response(JSON.stringify({ error: err.message }), {
+        status: err.status,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+    console.error('Unknown Error processing request:', err);
+    return new Response(JSON.stringify({ error: 'Server error' }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
   }
-}
-
-async function getUserFromHeader(req: Request) {
-  const auth = req.headers.get('Authorization');
-  if (!auth?.startsWith('Bearer ')) {
-    throw new AuthError(401, 'Missing or invalid Authorization header');
-  }
-
-  const token = auth.split(' ')[1];
-  const {
-    data: { user },
-    error,
-  } = await supabaseAdmin.auth.getUser(token);
-
-  if (error || !user) {
-    throw new AuthError(401, error?.message ?? 'Invalid token');
-  }
-
-  return user;
 }
 
 export async function POST(req: Request) {
@@ -122,13 +200,12 @@ export async function POST(req: Request) {
         ram: bodyData.ram,
         storage: bodyData.storage,
         ipv4: Array.from({ length: bodyData.ipv4 }, () => generateIPv4()).join(','),
-        ipv6: Array.from({ length: bodyData.ipv4 }, () => generateIPv4()).join(','),
+        ipv6: Array.from({ length: bodyData.ipv6 }, () => generateIPv6()).join(','),
         status: 'pending',
         location: bodyData.location,
         user_id: user.id,
         os: bodyData.os,
         auth_method: bodyData.authMethod,
-        power: 'off',
       })
       .select();
     const vpsConfigResponse = data as unknown as VpsResponse;

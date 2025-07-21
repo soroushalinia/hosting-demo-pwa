@@ -25,3 +25,25 @@ export const createVpsSchema = z
   );
 
 export type CreateVpsInput = z.infer<typeof createVpsSchema>;
+
+export const querySchema = z.object({
+  page: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : 1))
+    .refine((val) => val > 0, { message: 'page must be positive' }),
+
+  pageSize: z
+    .string()
+    .optional()
+    .default('10')
+    .transform((val) => (val ? parseInt(val, 10) : 10))
+    .refine((val) => val > 0 && val <= 100, { message: 'pageSize must be between 1 and 100' }),
+
+  sortBy: z
+    .enum(['created_at', 'cpu', 'ram', 'server_name', 'status'])
+    .optional()
+    .default('created_at'),
+
+  sortOrder: z.enum(['asc', 'desc']).optional().default('desc'),
+});
