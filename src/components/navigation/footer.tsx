@@ -1,31 +1,36 @@
 import React from 'react';
-import { DatabaseZapIcon } from 'lucide-react';
 import Link from 'next/link';
+import { DatabaseZapIcon } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bottom-0 z-40 flex h-[56px] w-screen items-center justify-center border-t bg-transparent backdrop-blur">
-      <div className="flex h-[56px] w-full max-w-7xl flex-row items-center justify-between px-4">
-        <div className="flex flex-row items-center gap-2">
-          <DatabaseZapIcon className="text-primary drop-shadow" size={22} />
-          <span className="text-muted-foreground text-xs">
-            &copy; {new Date().getFullYear()} Hosting Demo PWA
-          </span>
+    <footer className="bg-background/70 w-full border-t backdrop-blur">
+      <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 p-3 text-center md:flex-row md:justify-between md:py-4">
+        <div className="flex items-center gap-2">
+          <DatabaseZapIcon className="text-primary size-6 md:size-5" />
+          <span className="text-foreground text-sm font-semibold">Hosting Demo PWA</span>
         </div>
 
-        <div className="flex flex-row items-center gap-2">
-          <Link
-            href="/docs"
-            className="text-muted-foreground hover:text-primary hover:bg-primary/10 rounded p-3 text-xs font-medium transition-colors"
-          >
+        <nav className="text-muted-foreground flex flex-wrap justify-center gap-4 text-xs md:flex-1 md:justify-center md:text-sm">
+          <Link href="/faq" className="hover:text-primary transition-colors">
+            FAQ
+          </Link>
+          <Link href="/terms" className="hover:text-primary transition-colors">
+            Terms
+          </Link>
+          <Link href="/aup" className="hover:text-primary transition-colors">
+            AUP
+          </Link>
+          <Link href="/docs" className="hover:text-primary transition-colors">
             Docs
           </Link>
-          <Link
-            href="/support"
-            className="text-muted-foreground hover:text-primary hover:bg-primary/10 rounded p-3 text-xs font-medium transition-colors"
-          >
+          <Link href="/support" className="hover:text-primary transition-colors">
             Support
           </Link>
+        </nav>
+
+        <div className="text-muted-foreground text-sm select-none md:pr-2">
+          &copy; {new Date().getFullYear()} Hosting Demo PWA
         </div>
       </div>
     </footer>

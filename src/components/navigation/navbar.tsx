@@ -44,12 +44,12 @@ export default function Navbar() {
       <div className="flex h-[60px] w-full max-w-7xl flex-row items-center justify-between px-4">
         <Link href="/" className="flex flex-row items-center gap-2">
           <DatabaseZapIcon className="text-primary drop-shadow" size={28} />
-          <h1 className="text-primary text-xl font-semibold tracking-tight drop-shadow-sm">
+          <h1 className="text-primary text-xl font-semibold tracking-tight drop-shadow-sm sm:text-base">
             Hosting Demo PWA
           </h1>
         </Link>
 
-        <div className="hidden flex-row items-center gap-2 sm:flex">
+        <div className="hidden flex-row items-center gap-2 md:flex">
           <Link
             href="/docs"
             className="text-muted-foreground hover:text-primary hover:bg-primary/10 rounded p-3 text-sm font-medium transition-colors"
@@ -62,6 +62,14 @@ export default function Navbar() {
           >
             Support
           </Link>
+          {user && (
+            <Link
+              href="/dashboard"
+              className="text-muted-foreground hover:text-primary hover:bg-primary/10 rounded p-3 text-sm font-medium transition-colors"
+            >
+              Dashboard
+            </Link>
+          )}
           <ThemeToggle />
           {isLoading ? (
             <Button size="sm" variant="outline" className="h-10">
@@ -112,7 +120,7 @@ export default function Navbar() {
               variant="outline"
               size="icon"
               aria-label="Open menu"
-              className="hover:bg-primary/10 p-1 sm:hidden"
+              className="hover:bg-primary/10 p-1 md:hidden"
             >
               <MenuIcon size={24} />
             </Button>
@@ -146,7 +154,7 @@ export default function Navbar() {
                 </Link>
               )}
 
-              <nav className="mt-2 flex flex-col gap-4">
+              <nav className="mt-2 flex flex-col gap-0">
                 <Link
                   href="/docs"
                   className="text-muted-foreground hover:text-primary hover:bg-primary/10 rounded px-3 py-2 text-base font-medium transition-colors"
@@ -160,6 +168,13 @@ export default function Navbar() {
                   onClick={() => setSheetOpen(false)}
                 >
                   Support
+                </Link>
+                <Link
+                  href="/dashboard"
+                  className="text-muted-foreground hover:text-primary hover:bg-primary/10 rounded px-3 py-2 text-base font-medium transition-colors"
+                  onClick={() => setSheetOpen(false)}
+                >
+                  Dashboard
                 </Link>
               </nav>
             </div>
