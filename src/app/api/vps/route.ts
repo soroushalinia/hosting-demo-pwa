@@ -20,7 +20,7 @@ type VpsResponse = {
   user_id: string;
   os: string;
   auth_method: string;
-  power: 'off' | 'on' | 'starting';
+  last_startup: string;
 }[];
 
 export async function GET(req: NextRequest) {
@@ -54,6 +54,18 @@ export async function GET(req: NextRequest) {
       .order(sortBy, { ascending: sortOrder === 'asc' })
       .range(from, to);
 
+    if (error) {
+      return new Response(
+        JSON.stringify({
+          error: 'Error getting servers. Please try again later or contact support.',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+    }
+
     if (server_list && server_list.length > 0) {
       const now = new Date();
 
@@ -66,9 +78,8 @@ export async function GET(req: NextRequest) {
       for (const server of outdatedServers) {
         const { error: updateError } = await supabaseAdmin
           .from('vps_instances')
-          .update({ status: 'on' })
+          .update({ status: 'on', last_startup: new Date().toISOString() })
           .eq('id', server.id);
-
         if (updateError) {
           return new Response(
             JSON.stringify({
@@ -81,18 +92,6 @@ export async function GET(req: NextRequest) {
           );
         }
       }
-    }
-
-    if (error) {
-      return new Response(
-        JSON.stringify({
-          error: 'Error getting servers. Please try again later or contact support.',
-        }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      );
     }
 
     return new Response(

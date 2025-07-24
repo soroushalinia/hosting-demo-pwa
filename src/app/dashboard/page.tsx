@@ -89,11 +89,10 @@ type FetchResponse = {
   };
 };
 
-const getStatusColor = (status: string) => {
-  if (status === 'pending' || status === 'starting') return 'yellow';
-  if (status === 'off') return 'red';
-  if (status === 'on') return 'green';
-  return 'gray';
+const statusColors: Record<string, string> = {
+  on: 'bg-green-400',
+  off: 'bg-red-400',
+  pending: 'bg-yellow-400',
 };
 
 export default function Dashboard() {
@@ -395,7 +394,7 @@ export default function Dashboard() {
                 <TableRow
                   key={s.id}
                   className="hover:bg-muted cursor-pointer transition"
-                  onClick={() => router.push(`/dashboard/vps/${s.id}`)}
+                  onClick={() => router.push(`/dashboard/server/${s.id}`)}
                 >
                   <TableCell>
                     <span className="font-mono">{s.server_name}</span>
@@ -410,11 +409,10 @@ export default function Dashboard() {
                     <div className="flex items-center gap-2">
                       <span className="relative flex size-2">
                         <span
-                          className="bg-opacity-75 absolute inline-flex h-full w-full animate-ping rounded-full"
-                          style={{ backgroundColor: `rgb(var(--${getStatusColor(s.status)}-400))` }}
+                          className={`bg-opacity-75 absolute inline-flex h-full w-full animate-ping rounded-full bg-${statusColors[s.status]}-400`}
                         />
                         <span
-                          className={`relative inline-flex size-2 rounded-full bg-${getStatusColor(s.status)}-500`}
+                          className={`relative inline-flex size-2 rounded-full bg-${statusColors[s.status]}-500`}
                         />
                       </span>
                       {s.status}
@@ -430,7 +428,7 @@ export default function Dashboard() {
             {filteredServers.map((s) => (
               <button
                 key={s.id}
-                onClick={() => router.push(`/dashboard/vps/${s.id}`)}
+                onClick={() => router.push(`/dashboard/server/${s.id}`)}
                 className="group border-border bg-muted/40 hover:bg-muted/30 cursor-pointer rounded-2xl border p-5 shadow-md transition hover:shadow-lg"
               >
                 <div className="mb-4 flex items-center gap-2">
@@ -458,7 +456,7 @@ export default function Dashboard() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Power className={`h-4 w-4 text-${getStatusColor(s.status)}-400`} />
+                    <Power className={`h-4 w-4 text-${statusColors[s.status]}-400`} />
                     <span className="capitalize">{s.status}</span>
                   </div>
                   <div className="flex items-center gap-2">

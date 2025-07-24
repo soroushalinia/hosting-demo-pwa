@@ -28,7 +28,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
     if (vps.user_id !== user.id) {
       return new Response(JSON.stringify({ error: 'VPS not found' }), {
-        status: 404,
+        status: 403,
         headers: { 'Content-Type': 'application/json' },
       });
     }
@@ -52,6 +52,64 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       headers: {
         'Content-Type': 'application/json',
       },
+    });
+  }
+}
+
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const user = await getUserFromHeader(req);
+    const { id } = await params;
+
+    if (!id) {
+      return new Response(JSON.stringify({ error: 'VPS ID is required' }), {
+        status: 422,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { data: vps, error: fetchError } = await supabaseAdmin
+      .from('vps_instances')
+      .select('id, user_id')
+      .eq('id', id)
+      .single();
+
+    if (fetchError || !vps) {
+      return new Response(JSON.stringify({ error: 'VPS not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (vps.user_id !== user.id) {
+      return new Response(JSON.stringify({ error: 'VPS not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { error: deleteError } = await supabaseAdmin.from('vps_instances').delete().eq('id', id);
+
+    if (deleteError) {
+      return new Response(JSON.stringify({ error: 'Failed to delete VPS' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    return new Response(null, { status: 204 });
+  } catch (err: unknown) {
+    if (err instanceof AuthError) {
+      return new Response(JSON.stringify({ error: err.message }), {
+        status: err.status,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    console.error('Unknown Error processing request:', err);
+    return new Response(JSON.stringify({ error: 'Server error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 }
