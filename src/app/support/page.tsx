@@ -2,6 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup } from '@/components/ui/radio-group';
+import Link from 'next/link';
 
 export default function SupportPage() {
   return (
@@ -23,21 +24,27 @@ export default function SupportPage() {
                 Learn how to troubleshoot SSH connection problems and fix common authentication
                 errors.
               </p>
-              <span className="text-primary text-sm">Read guide →</span>
+              <Link href="/docs" className="text-primary text-sm">
+                Read guide →
+              </Link>
             </div>
             <div className="space-y-2">
               <h3 className="font-medium">Server Performance</h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 Tips for optimizing your server&apos;s performance and resolving slowdown issues.
               </p>
-              <span className="text-primary text-sm">View solutions →</span>
+              <Link href="/dashboard/create" className="text-primary text-sm">
+                View solutions →
+              </Link>
             </div>
             <div className="space-y-2">
               <h3 className="font-medium">Billing Questions</h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 Find answers about billing cycles, payment methods, and invoices.
               </p>
-              <span className="text-primary text-sm">View FAQ →</span>
+              <Link href="/faq" className="text-primary text-sm">
+                View FAQ →
+              </Link>
             </div>
           </div>
         </Card>
@@ -95,7 +102,9 @@ export default function SupportPage() {
       <section className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-semibold">Frequently Asked Questions</h2>
-          <span className="text-primary text-sm">View all questions →</span>
+          <Link href="/faq" className="text-primary text-sm">
+            View all questions →
+          </Link>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           {faqs.map((faq) => (
@@ -110,11 +119,16 @@ export default function SupportPage() {
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-semibold">System Status</h2>
-          <span className="text-primary text-sm">View status page →</span>
+          <Link href="/status" className="text-primary text-sm">
+            View status page →
+          </Link>
         </div>
         <Card className="p-4">
           <div className="flex items-center gap-4">
-            <div className="h-3 w-3 rounded-full bg-green-500"></div>
+            <span className="relative flex h-3 w-3">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex h-3 w-3 rounded-full bg-green-500"></span>
+            </span>
             <p className="text-sm">All systems operational</p>
           </div>
         </Card>

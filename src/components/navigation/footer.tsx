@@ -15,9 +15,6 @@ export default function Footer() {
           <Link href="/faq" className="hover:text-primary transition-colors">
             FAQ
           </Link>
-          <Link href="/terms" className="hover:text-primary transition-colors">
-            Terms
-          </Link>
           <Link href="/aup" className="hover:text-primary transition-colors">
             AUP
           </Link>
