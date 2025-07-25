@@ -35,6 +35,9 @@ import { useSimulatedUsage } from './useSimulatedUsage';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
+import dynamic from 'next/dynamic';
+
+const TerminalComponent = dynamic(() => import('./terminal'), { ssr: false });
 
 interface VPSData {
   id: string;
@@ -135,7 +138,7 @@ export default function VPSPage() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [confirmInput, setConfirmInput] = useState('');
   const [uptime, setUptime] = useState('N/A');
-
+  const [showTerminal, setShowTerminal] = useState(false);
   const fallbackData = useMemo(
     () => ({
       status: 'off',
@@ -461,64 +464,83 @@ export default function VPSPage() {
         </TabsContent>
 
         <TabsContent value="actions">
-          <div className="mx-auto mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-            <Button
-              variant="outline"
-              className="flex w-full items-center justify-center gap-2"
-              onClick={() => {
-                toast(`Server power ${status === 'on' ? 'off' : 'on'} requested`);
-                powerMutation.mutate({
-                  id: data.server.id,
-                  command: status === 'on' ? 'poweroff' : 'poweron',
-                });
-              }}
-            >
-              <Power className="h-5 w-5" />
-              {status === 'on' ? 'Power Off' : 'Power On'}
-            </Button>
-
-            {status === 'on' && (
+          <>
+            <div className="mx-auto mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
               <Button
                 variant="outline"
                 className="flex w-full items-center justify-center gap-2"
                 onClick={() => {
-                  toast('Server reboot requested');
+                  toast(`Server power ${status === 'on' ? 'off' : 'on'} requested`);
                   powerMutation.mutate({
                     id: data.server.id,
-                    command: 'reboot',
+                    command: status === 'on' ? 'poweroff' : 'poweron',
                   });
                 }}
               >
-                <RotateCcw className="h-5 w-5" />
-                Reboot
+                <Power className="h-5 w-5" />
+                {status === 'on' ? 'Power Off' : 'Power On'}
               </Button>
-            )}
 
-            <Button
-              variant="outline"
-              className="flex w-full items-center justify-center gap-2"
-              onClick={() => alert('Reset password triggered')}
-            >
-              <KeyRound className="h-5 w-5" />
-              Reset Root Password
-            </Button>
-            <Button
-              variant="outline"
-              className="flex w-full items-center justify-center gap-2 text-green-600 dark:text-green-300"
-              onClick={() => alert('SSH connect triggered')}
-            >
-              <Server className="h-5 w-5" />
-              Connect via SSH
-            </Button>
-            <Button
-              variant="destructive"
-              className="flex w-full items-center justify-center gap-2"
-              onClick={() => setShowDeleteDialog(true)}
-            >
-              <Trash2 className="h-5 w-5" />
-              Delete Server
-            </Button>
-          </div>
+              {status === 'on' && (
+                <Button
+                  variant="outline"
+                  className="flex w-full items-center justify-center gap-2"
+                  onClick={() => {
+                    toast('Server reboot requested');
+                    powerMutation.mutate({
+                      id: data.server.id,
+                      command: 'reboot',
+                    });
+                  }}
+                >
+                  <RotateCcw className="h-5 w-5" />
+                  Reboot
+                </Button>
+              )}
+
+              <Button
+                variant="outline"
+                className="flex w-full items-center justify-center gap-2"
+                onClick={() => alert('Reset password triggered')}
+              >
+                <KeyRound className="h-5 w-5" />
+                Reset Root Password
+              </Button>
+              <Button
+                variant="outline"
+                className="flex w-full items-center justify-center gap-2 text-green-600 dark:text-green-300"
+                onClick={() => {
+                  if (status === 'on') {
+                    setShowTerminal(!showTerminal);
+                  } else {
+                    toast('Cannot connect to server when power is off.');
+                  }
+                }}
+              >
+                <Server className="h-5 w-5" />
+                {showTerminal === false ? 'Connect via SSH' : 'Disconnect SSH'}
+              </Button>
+              <Button
+                variant="destructive"
+                className="flex w-full items-center justify-center gap-2"
+                onClick={() => setShowDeleteDialog(true)}
+              >
+                <Trash2 className="h-5 w-5" />
+                Delete Server
+              </Button>
+            </div>
+            {status === 'on' && showTerminal === true && (
+              <div className="mt-6 w-full rounded-lg border">
+                <p className="p-4 text-center text-lg font-bold">
+                  <span className="font-mono">{server_name}</span> Console
+                </p>
+
+                <div className="p-4">
+                  <TerminalComponent server_name={server_name}></TerminalComponent>
+                </div>
+              </div>
+            )}
+          </>
         </TabsContent>
       </Tabs>
 
