@@ -30,6 +30,7 @@ import {
   Activity,
   Database,
   RotateCcw,
+  ArrowLeft,
 } from 'lucide-react';
 import { useSimulatedUsage } from './useSimulatedUsage';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -92,6 +93,7 @@ function formatUptime(lastStartupISO: string | null): string {
   if (diffMs < 0) return 'N/A';
 
   const seconds = Math.floor(diffMs / 1000) % 60;
+
   const minutes = Math.floor(diffMs / (1000 * 60)) % 60;
   const hours = Math.floor(diffMs / (1000 * 60 * 60)) % 24;
   const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
@@ -214,7 +216,7 @@ export default function VPSPage() {
 
   if (isLoading || !data)
     return (
-      <div className="mx-auto space-y-6">
+      <div className="mx-auto mt-16 space-y-6">
         <div className="flex justify-center">
           <Skeleton className="h-16 w-16 rounded-full" />
         </div>
@@ -245,6 +247,16 @@ export default function VPSPage() {
 
   return (
     <div className="mx-auto space-y-4">
+      <div className="mt-4 flex justify-start">
+        <Button
+          variant="outline"
+          className="flex items-center gap-2"
+          onClick={() => router.push('/dashboard')}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Dashboard
+        </Button>
+      </div>
       <div className="mt-6 flex justify-center">
         <Server size={42} className="text-primary-600" />
       </div>

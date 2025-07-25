@@ -93,7 +93,10 @@ export default function SupportPage() {
       </section>
 
       <section className="space-y-6">
-        <h2 className="text-2xl font-semibold">Frequently Asked Questions</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-semibold">Frequently Asked Questions</h2>
+          <span className="text-primary text-sm">View all questions →</span>
+        </div>
         <div className="grid gap-4 md:grid-cols-2">
           {faqs.map((faq) => (
             <Card key={faq.question} className="p-4">

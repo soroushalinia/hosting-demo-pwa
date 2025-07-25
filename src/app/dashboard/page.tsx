@@ -90,9 +90,16 @@ type FetchResponse = {
 };
 
 const statusColors: Record<string, string> = {
-  on: 'bg-green-400',
-  off: 'bg-red-400',
-  pending: 'bg-yellow-400',
+  on: 'green',
+  off: 'red',
+  pending: 'yellow',
+};
+
+const locationMap: Record<string, string> = {
+  'us-east': 'US East',
+  'us-west': 'US West',
+  'eu-central': 'EU Central',
+  'asia-east': 'Asia East',
 };
 
 export default function Dashboard() {
@@ -158,6 +165,12 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
+      <section className="space-y-4">
+        <h1 className="text-4xl font-bold tracking-tighter">Server Dashboard</h1>
+        <p className="text-xl text-gray-500 dark:text-gray-400">
+          Manage and monitor your servers easily.
+        </p>
+      </section>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="hidden w-full flex-col gap-4 sm:flex sm:flex-row sm:items-center sm:gap-2">
           <Input
@@ -418,7 +431,7 @@ export default function Dashboard() {
                       {s.status}
                     </div>
                   </TableCell>
-                  <TableCell>{s.location}</TableCell>
+                  <TableCell>{locationMap[s.location]}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -439,15 +452,15 @@ export default function Dashboard() {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div className="flex items-center gap-2">
                     <Cpu className="text-muted-foreground h-4 w-4" />
-                    <span>{s.cpu}</span>
+                    <span>{s.cpu} vCores</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <HardDrive className="text-muted-foreground h-4 w-4" />
                     <span>{s.storage} GB</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Cpu className="text-muted-foreground h-4 w-4" />
-                    <span>{s.ram} GB RAM</span>
+                    <MemoryStick className="text-muted-foreground h-4 w-4" />
+                    <span>{s.ram} GB</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Globe className="text-muted-foreground h-4 w-4 shrink-0" />
@@ -457,11 +470,13 @@ export default function Dashboard() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Power className={`h-4 w-4 text-${statusColors[s.status]}-400`} />
-                    <span className="capitalize">{s.status}</span>
+                    <span className={`capitalize text-${statusColors[s.status]}-400`}>
+                      {s.status}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <MapPin className="text-muted-foreground h-4 w-4" />
-                    <span>{s.location}</span>
+                    <span>{locationMap[s.location]}</span>
                   </div>
                 </div>
               </button>

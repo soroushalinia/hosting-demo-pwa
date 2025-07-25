@@ -370,7 +370,7 @@ export default function CreateServer() {
               </ul>
             </div>
 
-            <div className="mt-auto border-t border-dashed pt-3 text-sm font-semibold">
+            <div className="mt-4 border-t border-dashed pt-3 text-sm font-semibold">
               <div className="flex justify-between">
                 <span>Hourly:</span>
                 <span className="font-mono text-green-700">${totalHourly.toFixed(4)} / hr</span>
@@ -411,10 +411,21 @@ export default function CreateServer() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+          <div className="space-y-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full px-8"
+              onClick={() => router.push('/dashboard')}
+              disabled={mutation.isPending}
+            >
+              Back to Dashboard
+            </Button>
 
-          <Button type="submit" className="w-full px-8" disabled={mutation.isPending}>
-            {mutation.isPending ? 'Submitting...' : 'Create Server'}
-          </Button>
+            <Button type="submit" className="w-full px-8" disabled={mutation.isPending}>
+              {mutation.isPending ? 'Submitting...' : 'Create Server'}
+            </Button>
+          </div>
         </div>
       </form>
     </div>
